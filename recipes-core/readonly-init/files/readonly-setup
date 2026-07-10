@@ -1,0 +1,26 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:         readonly-setup
+# Default-Start:    S
+### END INIT INFO
+
+case "$1" in
+    start)
+        mkdir -p /src /out
+        
+        # 9p shares from host. Tags 'src'/'out' are set on the QEMU device line. 
+        # Guest-side 'ro' is defensive; the real wall is host-side readonly=on
+        mount -t 9p -o trans=virtio,version=9p2000.L,ro src /src
+        mount -t 9p -o trans=virtio,version=9p2000.L   out /out
+
+
+        # Egress via QEMU user-mode NAT (10.0.2.x, DNS at 10.0.2.3)
+        ip link set eth0 up 2>/dev/null
+        udhcpc -i eth0 -q -n 2>/dev/null || true
+        ;;
+    stop)
+        unmount /src 2>/dev/null || true
+        unmount /out 2>/dev/null || true
+        ;;
+esac
+exit 0
