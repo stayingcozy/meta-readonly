@@ -1,5 +1,5 @@
 SUMMARY = "readonly base userspace tools"
-LICENSE = "APACHE"
+LICENSE = "MIT"
 
 inherit packagegroup
 

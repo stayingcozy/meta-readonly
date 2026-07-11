@@ -1,5 +1,5 @@
 SUMMARY = "readonly guest boot setup: 9p mounts + networks"
-LICENSE = "APACHE"
+LICENSE = "CLOSED"
 
 SRC_URI = "file://readonly-setup"
 

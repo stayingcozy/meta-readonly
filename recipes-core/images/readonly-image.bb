@@ -1,5 +1,5 @@
 SUMMARY = "readonly guest base image"
-LICENSE = "APACHE"
+LICENSE = "MIT"
 
 inherit core-image
 

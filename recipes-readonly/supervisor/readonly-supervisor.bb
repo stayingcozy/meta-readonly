@@ -1,5 +1,5 @@
 SUMMARY = "readonly vsock supervisor (placeholder)"
-LICENSE = "APACHE"
+LICENSE = "CLOSED"
 
 SRC_URI = "file://readonly-supervisor.sh"
 
