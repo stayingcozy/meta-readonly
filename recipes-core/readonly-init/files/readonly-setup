@@ -17,6 +17,9 @@ case "$1" in
         # Egress via QEMU user-mode NAT (10.0.2.x, DNS at 10.0.2.3)
         ip link set eth0 up 2>/dev/null
         udhcpc -i eth0 -q -n 2>/dev/null || true
+
+        # start vsock supervisor (bg; persists across sessions)
+        /usr/bin/readonly-supervisor &
         ;;
     stop)
         unmount /src 2>/dev/null || true
