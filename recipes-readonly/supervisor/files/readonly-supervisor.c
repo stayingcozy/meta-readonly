@@ -62,6 +62,7 @@ static int recv_header(int fd, uint8_t *type, uint32_t *len) {
     *type = h[0];
     *len = (uint32_t)h[1] | ((uint32_t)h[2] << 8)
          | ((uint32_t)h[3] << 16) | ((uint32_t)h[4] << 24);
+    return 1;
 }
 
 static void handle_session(int cfd) {
