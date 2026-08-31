@@ -134,7 +134,7 @@ static void handle_session(int cfd) {
 
         int status = 0;
         waitpid(pid, &status, 0);
-        int32_t code = WIFEXITED(status) ? WEXITEDSTATUS(status) : -1;
+        int32_t code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
         uint8_t ec[4] = { (uint8_t)code, (uint8_t)(code>>8),
                           (uint8_t)(code>>16), (uint8_t)(code>>24) };
         send_frame(cfd, RO_FRAME_EXIT, ec, 4);
