@@ -36,3 +36,9 @@ MACHINE ?= "qemux86-64"
 DL_DIR ?= "${TOPDIR}/../../downloads"
 SSTATE_DIR ?= "${TOPDIR}/../../sstate-cache"
 ```
+
+## Run
+```
+bitbake readonly-image
+```
+
