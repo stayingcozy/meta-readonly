@@ -49,7 +49,7 @@ static int send_frame(int fd, uint8_t type, const void *payload, uint32_t len) {
     uint8_t hdr[5];
     hdr[0] = type;
     hdr[1] = (uint8_t)(len);       hdr[2] = (uint8_t)(len >> 8);
-    hdr[2] = (uint8_t)(len >> 16); hdr[4] = (uint8_t)(len >> 24);
+    hdr[3] = (uint8_t)(len >> 16); hdr[4] = (uint8_t)(len >> 24);
     if (write_all(fd, hdr, 5) != 1) return -1;
     if (len && write_all(fd, payload, len) != 1) return -1;
     return 1;
@@ -98,7 +98,7 @@ static void handle_session(int cfd) {
             int r = recv_header(cfd, &t, &l);
             if (r <= 0) break;
             if (t == RO_FRAME_DATA) {
-                uint32_t left = 1;
+                uint32_t left = l;
                 while (left) {
                     uint32_t c = left > sizeof buf ? (uint32_t)sizeof buf : left;
                     if (read_all(cfd, buf, c) != 1) break;
@@ -131,15 +131,17 @@ static void handle_session(int cfd) {
                 break;                      /* child closes the PTY */
             }
         }
-
-        int status = 0;
-        waitpid(pid, &status, 0);
-        int32_t code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
-        uint8_t ec[4] = { (uint8_t)code, (uint8_t)(code>>8),
-                          (uint8_t)(code>>16), (uint8_t)(code>>24) };
-        send_frame(cfd, RO_FRAME_EXIT, ec, 4);
-        close(master);
     }
+
+    // when read fails -> clean break
+    kill(pid, SIGKILL); // kill guest child process, incase host broke connection, if not waitpid will hang
+    int status = 0;
+    waitpid(pid, &status, 0);
+    int32_t code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+    uint8_t ec[4] = { (uint8_t)code, (uint8_t)(code>>8),
+                     (uint8_t)(code>>16), (uint8_t)(code>>24) };
+    send_frame(cfd, RO_FRAME_EXIT, ec, 4);
+    close(master);
 }
 
 int main(void) {
