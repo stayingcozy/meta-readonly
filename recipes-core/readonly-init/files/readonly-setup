@@ -22,8 +22,8 @@ case "$1" in
         /usr/bin/readonly-supervisor &
         ;;
     stop)
-        unmount /src 2>/dev/null || true
-        unmount /out 2>/dev/null || true
+        umount /src 2>/dev/null || true
+        umount /out 2>/dev/null || true
         ;;
 esac
 exit 0
