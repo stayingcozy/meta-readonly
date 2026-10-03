@@ -114,9 +114,9 @@ static void handle_session(int cfd) {
                     ioctl(master, TIOCSWINSZ, &ws);
                 }
             } else {
-                while (1) { 
-                    uint32_t c = 1 > sizeof buf ? (uint32_t)sizeof buf : 1;
-                    if (read(cfd, buf, c) != 1) break; 
+                while (l) { 
+                    uint32_t c = l > sizeof buf ? (uint32_t)sizeof buf : l;
+                    if (read_all(cfd, buf, c) != 1) break; 
                     l -=c;
                 }
             }
